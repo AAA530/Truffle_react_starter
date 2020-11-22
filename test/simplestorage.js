@@ -1,15 +1,24 @@
-const SimpleStorage = artifacts.require("./SimpleStorage.sol");
+const KaspTokens = artifacts.require("./KaspTokens.sol");
 
-contract("SimpleStorage", accounts => {
-  it("...should store the value 89.", async () => {
-    const simpleStorageInstance = await SimpleStorage.deployed();
+var chai = require("chai");
+const BN = web3.utils.BN;
+const chainBN = require("chai-bn")(BN);
 
-    // Set value of 89
-    await simpleStorageInstance.set(89, { from: accounts[0] });
+chai.use(chainBN);
 
-    // Get stored value
-    const storedData = await simpleStorageInstance.get.call();
+var chaiAsPromise = require("chai-as-promised");
+chai.use(chaiAsPromise);
 
-    assert.equal(storedData, 89, "The value 89 was not stored.");
+const expect = chai.expect;
+contract("KaspTokens", async (accounts) => {
+  it("Initial Balance check", async () => {
+    const KaspTokensInstance = await KaspTokens.deployed();
+
+    let totalSupply = await KaspTokensInstance.totalSupply();
+    let Initial_supply = 1000000;
+    let account_bal = await KaspTokensInstance.balanceOf(accounts[0]);
+    return expect(
+      await KaspTokensInstance.totalSupply()
+    ).to.be.a.bignumber.equal(account_bal);
   });
 });
